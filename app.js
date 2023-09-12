@@ -4,7 +4,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const Campground = require('./models/campground');
 const methodOverride = require("method-override");
-
+const morgan = require("morgan");
 
 mongoose.connect('mongodb://127.0.0.1:27017/campLog', {
     useNewUrlParser: true,
@@ -25,8 +25,8 @@ app.set('views', path.join(__dirname, 'views'));
 
 
 app.use(express.urlencoded({extended: true})) // parses the req.body from the sent form
-app.use(methodOverride("_method"))
-
+app.use(methodOverride("_method"));
+app.use(morgan('common'));
 
 app.get('/', (req, res)=>{
     // res.send('Hello, I am campLog');
@@ -67,6 +67,11 @@ app.put("/campgrounds/:id", async(req, res)=>{
     res.redirect(`/campgrounds/${campground._id}`);
 })
 
+app.delete("/campgrounds/:id", async (req, res)=>{
+    const { id }= req.params;
+    await Campground.findByIdAndDelete(id);
+    res.redirect("/campgrounds")
+})
 
 app.listen(3000, ()=>{
     console.log('Listening for data waves on port 3000')
