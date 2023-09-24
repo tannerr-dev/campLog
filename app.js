@@ -31,11 +31,14 @@ app.use(express.urlencoded({extended: true})) // parses the req.body from the se
 app.use(methodOverride("_method"));
 app.use(morgan('common'));
 
-// app.use((req, res, next)=>{
-//     req.requestTime = Date.now();
-//     console.log(req.method, req.path);
-//     next();
-// })
+
+//middleware with next function
+app.use((req, res, next)=>{
+    req.requestTime = Date.now();
+    // console.log(req.method, req.path);
+    console.log(req.requestTime)
+    next();
+})
 
 app.get('/', (req, res)=>{
     // res.send('Hello, I am campLog');
@@ -51,7 +54,8 @@ app.get('/campgrounds', async (req, res)=>{
 
 app.get("/campgrounds/new", (req, res)=>{
     res.render("campgrounds/new")
-}) //order matters, this needs to be before the /:id otherwise the 'new' will be handled as an id
+}) 
+//order matters, this needs to be before the /:id otherwise the 'new' will be handled as an id
 
 app.post("/campgrounds", async (req, res)=>{
     const campground = new Campground(req.body.campground);
