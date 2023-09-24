@@ -36,7 +36,7 @@ app.use(morgan('common'));
 app.use((req, res, next)=>{
     req.requestTime = Date.now();
     // console.log(req.method, req.path);
-    console.log(req.requestTime)
+    console.log(req.request)
     next();
 })
 
