@@ -5,8 +5,8 @@ const Campground = require('../models/campground');
 
 mongoose.connect('mongodb://127.0.0.1:27017/campLog', {
     useNewUrlParser: true,
-   useUnifiedTopology: true
-}); // useCreateIndex: true,// docs says it always acts as true now
+    useUnifiedTopology: true
+}); // useCreateIndex: true// docs says it always acts as true now
     
 
 const db = mongoose.connection;
