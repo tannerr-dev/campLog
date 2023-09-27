@@ -55,9 +55,10 @@ app.get("/campgrounds/new", (req, res) => {
 //order matters, this needs to be before the /:id otherwise the 'new' will be handled as an id
 
 app.post("/campgrounds", catchAsync(async (req, res, next) => {
-        const campground = new Campground(req.body.campground);
-        await campground.save();
-        res.redirect(`/campgrounds/${campground._id}`);
+    if(!req.body.campground) throw new ExpressError("Invalid data bruh", 400);
+    const campground = new Campground(req.body.campground);
+    await campground.save();
+    res.redirect(`/campgrounds/${campground._id}`);
 }));
 
 app.get("/campgrounds/:id", catchAsync(async (req, res) => {
@@ -86,8 +87,14 @@ app.delete("/campgrounds/:id", catchAsync(async (req, res, next) => {
     res.redirect("/campgrounds");
 }));
 
+app.all("*", (req, res, next) => {
+    next(new ExpressError("Page NOTTTT found", 404))
+});
+
 app.use((err, req, res, next) => {
-    res.send("oh man");
+    const {statusCode = 500, message= "Something fucc'd"} = err;
+    res.status(statusCode).send(message);
+    // res.send("oh man");
 });
 
 app.listen(3000, () => {
