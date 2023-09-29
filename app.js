@@ -8,6 +8,7 @@ const morgan = require("morgan");
 const ejsMate = require("ejs-mate");
 const catchAsync = require("./utils/catchAsync");
 const ExpressError = require("./utils/ExpressError");
+const Joi = require("joi");
 
 mongoose.connect("mongodb://127.0.0.1:27017/campLog", {
     useNewUrlParser: true,
@@ -55,7 +56,24 @@ app.get("/campgrounds/new", (req, res) => {
 //order matters, this needs to be before the /:id otherwise the 'new' will be handled as an id
 
 app.post("/campgrounds", catchAsync(async (req, res, next) => {
-    if(!req.body.campground) throw new ExpressError("Invalid data bruh", 400);
+    // if(!req.body.campground) throw new ExpressError("Invalid data bruh", 400);
+    // new validation using JOI instead of old above jank validate
+    const campgroundJOISchema = Joi.object({
+        campground: Joi.object({
+            title: Joi.string().required(),
+            price: Joi.number().required().min(0),
+            image: Joi.string().required(),
+            location: Joi.string().required(),
+            description: Joi.string().required()
+        }).required()
+    })
+    const { error } = campgroundJOISchema.validate(req.body);
+    if (error) {
+        const msg = error.details.map((el) => el.message).join(",");
+        console.log(msg);
+        throw new ExpressError(msg, 400);
+    }
+
     const campground = new Campground(req.body.campground);
     await campground.save();
     res.redirect(`/campgrounds/${campground._id}`);
@@ -92,8 +110,8 @@ app.all("*", (req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-    const {statusCode = 500, message= "Something fucc'd"} = err;
-    res.status(statusCode).send(message);
+    const { statusCode = 500, message = "Something fucc'd" } = err;
+    res.status(statusCode).render("error", { err });
     // res.send("oh man");
 });
 
