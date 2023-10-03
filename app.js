@@ -39,6 +39,28 @@ app.use((req, res, next) => {
     next();
 });
 
+const validateCampground = (req, res, next)=>{
+        // new validation using JOI instead of old above jank validate
+        const campgroundJOISchema = Joi.object({
+            campground: Joi.object({
+                title: Joi.string().required(),
+                price: Joi.number().required().min(0),
+                image: Joi.string().required(),
+                location: Joi.string().required(),
+                description: Joi.string().required()
+            }).required()
+        })
+        const { error } = campgroundJOISchema.validate(req.body);
+        if (error) {
+            const msg = error.details.map((el) => el.message).join(",");
+            console.log(msg);
+            throw new ExpressError(msg, 400);
+        }
+    
+}
+
+
+
 app.get("/", (req, res) => {
     // res.send('Hello, I am campLog');
     res.render("home");
@@ -57,22 +79,6 @@ app.get("/campgrounds/new", (req, res) => {
 
 app.post("/campgrounds", catchAsync(async (req, res, next) => {
     // if(!req.body.campground) throw new ExpressError("Invalid data bruh", 400);
-    // new validation using JOI instead of old above jank validate
-    const campgroundJOISchema = Joi.object({
-        campground: Joi.object({
-            title: Joi.string().required(),
-            price: Joi.number().required().min(0),
-            image: Joi.string().required(),
-            location: Joi.string().required(),
-            description: Joi.string().required()
-        }).required()
-    })
-    const { error } = campgroundJOISchema.validate(req.body);
-    if (error) {
-        const msg = error.details.map((el) => el.message).join(",");
-        console.log(msg);
-        throw new ExpressError(msg, 400);
-    }
 
     const campground = new Campground(req.body.campground);
     await campground.save();
