@@ -9,7 +9,10 @@ const ejsMate = require("ejs-mate");
 const catchAsync = require("./utils/catchAsync");
 const ExpressError = require("./utils/ExpressError");
 // const Joi = require("joi");
-const {campgroundSchema} = require("./schemas")
+const {campgroundSchema} = require("./schemas");
+const Review = require("./models/review");
+const review = require("./models/review");
+
 
 mongoose.connect("mongodb://127.0.0.1:27017/campLog", {
     useNewUrlParser: true,
@@ -41,16 +44,16 @@ app.use((req, res, next) => {
 });
 
 const validateCampground = (req, res, next)=>{
-        // new validation using JOI instead of old above jank validate
-        const { error } = campgroundSchema.validate(req.body);
-        if (error) {
-            const msg = error.details.map((el) => el.message).join(",");
-            console.log(msg);
-            console.log("hell yea from the server, joi stopped you")
-            throw new ExpressError(msg, 400);
-        } else {
-            next();
-        }
+    // new validation using JOI instead of old above jank validate
+    const { error } = campgroundSchema.validate(req.body);
+    if (error) {
+        const msg = error.details.map((el) => el.message).join(",");
+        console.log(msg);
+        console.log("hell yea from the server, joi stopped you")
+        throw new ExpressError(msg, 400);
+    } else {
+        next();
+    }
 }
 
 
@@ -71,6 +74,8 @@ app.get("/campgrounds/new", (req, res) => {
 });
 //order matters, this needs to be before the /:id otherwise the 'new' will be handled as an id
 
+
+//THESE ARE THE CAMPGROUND ROUTES
 app.post("/campgrounds", validateCampground, catchAsync(async (req, res, next) => {
     // if(!req.body.campground) throw new ExpressError("Invalid data bruh", 400);
     
@@ -103,6 +108,27 @@ app.delete("/campgrounds/:id", catchAsync(async (req, res, next) => {
     res.redirect("/campgrounds");
 }));
 
+
+
+
+//THESE ARE THE REVIEW ROUTES
+app.post("/campgrounds/:id/reviews", catchAsync(async(req,res)=>{
+    // res.send("you made it bro")
+    const campground = await Campground.findById(req.params.id);
+    const review = new Review(req.body.review);
+    campground.reviews.push(review);
+    await review.save();
+    await campground.save();
+    res.redirect(`/campgrounds/${campground._id}`);
+}));
+
+
+
+
+
+
+
+// THESE ARE THE CATCH ALLS/EVERY TIME
 app.all("*", (req, res, next) => {
     next(new ExpressError("Page NOTTTT found", 404))
 });
