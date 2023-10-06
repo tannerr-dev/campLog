@@ -11,7 +11,7 @@ const ExpressError = require("./utils/ExpressError");
 // const Joi = require("joi");
 const {campgroundSchema, reviewSchema} = require("./schemas");
 const Review = require("./models/review");
-const review = require("./models/review");
+
 
 
 mongoose.connect("mongodb://127.0.0.1:27017/campLog", {
@@ -103,7 +103,8 @@ app.post("/campgrounds", validateCampground, catchAsync(async (req, res, next) =
 }));
 
 app.get("/campgrounds/:id", catchAsync(async (req, res) => {
-    const campground = await Campground.findById(req.params.id);
+    const campground = await Campground.findById(req.params.id).populate('reviews');
+    // console.log(campground.reviews)
     res.render("campgrounds/show", { campground });
 }));
 
