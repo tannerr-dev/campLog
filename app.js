@@ -9,7 +9,7 @@ const ejsMate = require("ejs-mate");
 const catchAsync = require("./utils/catchAsync");
 const ExpressError = require("./utils/ExpressError");
 // const Joi = require("joi");
-const {campgroundSchema} = require("./schemas");
+const {campgroundSchema, reviewSchema} = require("./schemas");
 const Review = require("./models/review");
 const review = require("./models/review");
 
@@ -35,7 +35,7 @@ app.use(express.urlencoded({ extended: true })); // parses the req.body from the
 app.use(methodOverride("_method"));
 app.use(morgan("common"));
 
-//middleware with next function
+// MIDDLESWARE SECTION, they require the next function as a parameter
 app.use((req, res, next) => {
     req.requestTime = Date.now();
     // console.log(req.method, req.path);
@@ -56,8 +56,26 @@ const validateCampground = (req, res, next)=>{
     }
 }
 
+const validateReview = (req, res, next)=>{
+    const { error } = reviewSchema.validate(req.body);
+    if (error) {
+        const msg = error.details.map((el) => el.message).join(",");
+        console.log(msg);
+        console.log("hell yea from the server, joi validateReview stopped you")
+        throw new ExpressError(msg, 400);
+    } else {
+        next();
+    }
+}
 
 
+
+
+
+
+
+
+// Beginning of all the routing after the middleware
 app.get("/", (req, res) => {
     // res.send('Hello, I am campLog');
     res.render("home");
@@ -112,7 +130,7 @@ app.delete("/campgrounds/:id", catchAsync(async (req, res, next) => {
 
 
 //THESE ARE THE REVIEW ROUTES
-app.post("/campgrounds/:id/reviews", catchAsync(async(req,res)=>{
+app.post("/campgrounds/:id/reviews",validateReview, catchAsync(async(req,res)=>{
     // res.send("you made it bro")
     const campground = await Campground.findById(req.params.id);
     const review = new Review(req.body.review);
@@ -121,6 +139,8 @@ app.post("/campgrounds/:id/reviews", catchAsync(async(req,res)=>{
     await campground.save();
     res.redirect(`/campgrounds/${campground._id}`);
 }));
+
+
 
 
 
