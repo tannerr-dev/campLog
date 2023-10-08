@@ -1,4 +1,5 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+const Review = require("./review");
 const Schema = mongoose.Schema;
 
 const CampgroundSchema = new Schema  ({
@@ -14,5 +15,22 @@ const CampgroundSchema = new Schema  ({
         }
     ]
 });
+  
 
-module.exports = mongoose.model('Campground', CampgroundSchema);
+
+// vvv .post below means its post query in mongoose and mongo
+CampgroundSchema.post("findOneAndDelete", async function(doc){
+    // console.log("damn b")
+    // console.log(doc)
+    if(doc){
+        await Review.deleteMany({ // colt's class says .remove but research shows it is deprecated
+            _id: {
+                $in: doc.reviews
+            }
+        })
+    }
+})
+
+module.exports = mongoose.model("Campground", CampgroundSchema);
+
+
