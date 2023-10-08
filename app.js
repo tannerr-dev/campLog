@@ -11,6 +11,7 @@ const ExpressError = require("./utils/ExpressError");
 // const Joi = require("joi");
 const {campgroundSchema, reviewSchema} = require("./schemas");
 const Review = require("./models/review");
+const cookieParser = require("cookie-parser")
 
 
 
