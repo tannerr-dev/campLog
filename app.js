@@ -53,7 +53,7 @@ app.use((req, res, next) => {
 
 // ROUTES
 app.use("/campgrounds", campgrounds);
-app.use("/campgrounds/:id/reviews", reviews)
+app.use("/campgrounds/:id/reviews", reviews) //EMBEDDING THE :id makes it so we have to merge params on the router page
 
 // Beginning of all the routing after the middleware
 app.get("/", (req, res) => {

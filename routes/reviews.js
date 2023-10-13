@@ -1,5 +1,5 @@
 const express = require("express");
-const router = express.Router();
+const router = express.Router({mergeParams: true});// MERGE PARAMS TAKES SAME PARAMS FROM APP.JS BECAUSE BY DEFAULT THEY ARE SEPARATE PARAMS
 const catchAsync = require("../utils/catchAsync");
 const ExpressError = require("../utils/ExpressError");
 const Campground = require("../models/campground");
