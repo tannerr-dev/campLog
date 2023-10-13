@@ -13,6 +13,9 @@ const {campgroundSchema, reviewSchema} = require("./schemas");
 const Review = require("./models/review");
 const cookieParser = require("cookie-parser")
 
+const campgrounds = require("./routes/campgrounds");
+
+
 
 mongoose.connect("mongodb://127.0.0.1:27017/campLog", {
     useNewUrlParser: true,
@@ -43,18 +46,7 @@ app.use((req, res, next) => {
     next();
 });
 
-const validateCampground = (req, res, next)=>{
-    // new validation using JOI instead of old above jank validate
-    const { error } = campgroundSchema.validate(req.body);
-    if (error) {
-        const msg = error.details.map((el) => el.message).join(",");
-        console.log(msg);
-        console.log("hell yea from the server, joi stopped you")
-        throw new ExpressError(msg, 400);
-    } else {
-        next();
-    }
-}
+
 
 const validateReview = (req, res, next)=>{
     const { error } = reviewSchema.validate(req.body);
@@ -73,7 +65,7 @@ const validateReview = (req, res, next)=>{
 
 
 
-
+app.use("/campgrounds", campgrounds)
 
 // Beginning of all the routing after the middleware
 app.get("/", (req, res) => {
@@ -82,50 +74,7 @@ app.get("/", (req, res) => {
     // console.log(`yer request date: ${req.requestTime}`);
 });
 
-app.get("/campgrounds", async (req, res) => {
-    const campgrounds = await Campground.find({});
-    res.render("campgrounds/index", { campgrounds });
-});
 
-app.get("/campgrounds/new", (req, res) => {
-    res.render("campgrounds/new");
-});
-//order matters, this needs to be before the /:id otherwise the 'new' will be handled as an id
-
-
-//THESE ARE THE CAMPGROUND ROUTES
-app.post("/campgrounds", validateCampground, catchAsync(async (req, res, next) => {
-    // if(!req.body.campground) throw new ExpressError("Invalid data bruh", 400);
-    
-    const campground = new Campground(req.body.campground);
-    await campground.save();
-    res.redirect(`/campgrounds/${campground._id}`);
-}));
-
-app.get("/campgrounds/:id", catchAsync(async (req, res) => {
-    const campground = await Campground.findById(req.params.id).populate('reviews');
-    // console.log(campground.reviews)
-    res.render("campgrounds/show", { campground });
-}));
-
-app.get("/campgrounds/:id/edit", catchAsync(async (req, res, next) => {
-    const campground = await Campground.findById(req.params.id);
-    res.render("campgrounds/edit", { campground });
-}));
-
-app.put("/campgrounds/:id", validateCampground, catchAsync(async (req, res, next) => {
-    // res.send("it worked")
-    const { id } = req.params;
-    const campground = await Campground.findByIdAndUpdate(id, {...req.body.campground,});
-    res.redirect(`/campgrounds/${campground._id}`);
-}));
-
-
-app.delete("/campgrounds/:id", catchAsync(async (req, res, next) => {
-    const { id } = req.params;
-    await Campground.findByIdAndDelete(id);
-    res.redirect("/campgrounds");
-}));
 
 
 
