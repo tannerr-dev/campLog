@@ -10,8 +10,12 @@ const ExpressError = require("./utils/ExpressError");
 // const Joi = require("joi");
 const {campgroundSchema, reviewSchema} = require("./schemas");//JOI schema
 const Review = require("./models/review");
-const cookieParser = require("cookie-parser")
+const cookieParser = require("cookie-parser");
+const session = require("express-session");
 
+
+
+// NEW ROUTES
 const campgrounds = require("./routes/campgrounds");
 const reviews = require("./routes/reviews");
 
@@ -38,7 +42,23 @@ app.use(express.urlencoded({ extended: true })); // parses the req.body from the
 app.use(methodOverride("_method"));
 app.use(morgan("common"));
 
+// serve static public dir
 app.use(express.static(path.join(__dirname, "public")));
+
+
+// cookie sessions config and use
+const sessionConfig = {
+    secret: "thisshouldbeabettersecret",
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        httpOnly: true,
+        expires: Date.now() + 1000 * 60 *60 * 24 *7,
+        maxAge:1000 * 60 *60 * 24 *7
+    }
+}
+app.use(session(sessionConfig));
+
 
 
 // MIDDLESWARE SECTION, they require the next function as a parameter
