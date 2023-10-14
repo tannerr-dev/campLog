@@ -38,7 +38,7 @@ app.use(express.urlencoded({ extended: true })); // parses the req.body from the
 app.use(methodOverride("_method"));
 app.use(morgan("common"));
 
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "public")));
 
 
 // MIDDLESWARE SECTION, they require the next function as a parameter
