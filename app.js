@@ -12,7 +12,7 @@ const {campgroundSchema, reviewSchema} = require("./schemas");//JOI schema
 const Review = require("./models/review");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
-
+const flash = require("connect-flash");
 
 
 // NEW ROUTES
@@ -45,7 +45,6 @@ app.use(morgan("common"));
 // serve static public dir
 app.use(express.static(path.join(__dirname, "public")));
 
-
 // cookie sessions config and use
 const sessionConfig = {
     secret: "thisshouldbeabettersecret",
@@ -58,6 +57,7 @@ const sessionConfig = {
     }
 }
 app.use(session(sessionConfig));
+app.use(flash());
 
 
 
@@ -69,9 +69,10 @@ app.use((req, res, next) => {
     next();
 });
 
-
-
-
+app.use((req,res, next)=>{
+    res.locals.success = req.flash("success");
+    next();
+});
 
 
 // ROUTES
