@@ -13,7 +13,7 @@ const validateCampground = (req, res, next)=>{
     if (error) {
         const msg = error.details.map((el) => el.message).join(",");
         console.log(msg);
-        console.log("hell yea from the server, joi stopped you")
+        console.log("hey from the server, joi stopped you")
         throw new ExpressError(msg, 400);
     } else {
         next();
@@ -38,7 +38,7 @@ router.post("/", validateCampground, catchAsync(async (req, res, next) => {
     // if(!req.body.campground) throw new ExpressError("Invalid data bruh", 400);
     const campground = new Campground(req.body.campground);
     await campground.save();
-    req.flash("success", "Successfully made new campground");
+    req.flash("success", "Created new campground.");
     res.redirect(`/campgrounds/${campground._id}`);
 }));
 
@@ -56,7 +56,8 @@ router.get("/:id/edit", catchAsync(async (req, res, next) => {
 router.put("/:id", validateCampground, catchAsync(async (req, res, next) => {
     // res.send("it worked")
     const { id } = req.params;
-    const campground = await Campground.findByIdAndUpdate(id, {...req.body.campground,});
+    const campground = await Campground.findByIdAndUpdate(id, {...req.body.campground});
+    req.flash("success", "Updated campground.");
     res.redirect(`/campgrounds/${campground._id}`);
 }));
 
@@ -64,6 +65,7 @@ router.put("/:id", validateCampground, catchAsync(async (req, res, next) => {
 router.delete("/:id", catchAsync(async (req, res, next) => {
     const { id } = req.params;
     await Campground.findByIdAndDelete(id);
+    req.flash("success", "Deleted campground.");
     res.redirect("/campgrounds");
 }));
 
