@@ -69,6 +69,7 @@ app.use((req, res, next) => {
     next();
 });
 
+// this is FLASH setup
 app.use((req,res, next)=>{
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
