@@ -21,7 +21,7 @@ const User = require("./models/user")
 // NEW ROUTES
 const campgrounds = require("./routes/campgrounds");
 const reviews = require("./routes/reviews");
-
+const userRoutes = require("./routes/users");
 
 
 mongoose.connect("mongodb://127.0.0.1:27017/campLog", {
@@ -92,7 +92,7 @@ app.use((req,res, next)=>{
 // ROUTES
 app.use("/campgrounds", campgrounds);
 app.use("/campgrounds/:id/reviews", reviews) //EMBEDDING THE :id makes it so we have to merge params on the router page
-
+app.use("/", userRoutes)
 
 
 // Beginning of all the routing after the middleware
