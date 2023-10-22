@@ -14,6 +14,9 @@ const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const flash = require("connect-flash");
 
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const User = require("./models/user")
 
 // NEW ROUTES
 const campgrounds = require("./routes/campgrounds");
@@ -58,6 +61,12 @@ const sessionConfig = {
 }
 app.use(session(sessionConfig));
 app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()))//User.authenticate is added by passport 
+passport.serializeUser(User.serializeUser());//log/store user into session
+passport.deserializeUser(User.deserializeUser());//log/store user out of session
+
 
 
 
@@ -77,9 +86,22 @@ app.use((req,res, next)=>{
 });
 
 
+
+
+
 // ROUTES
 app.use("/campgrounds", campgrounds);
 app.use("/campgrounds/:id/reviews", reviews) //EMBEDDING THE :id makes it so we have to merge params on the router page
+
+
+app.get("/fakeUser", async (req, res)=>{
+    const user = new User({
+        email: "colt@gmail.com",
+        username: "colt"
+    })
+    const newUser = await User.register(user, "chicken");
+    res.send(newUser)
+})
 
 // Beginning of all the routing after the middleware
 app.get("/", (req, res) => {
@@ -87,8 +109,6 @@ app.get("/", (req, res) => {
     res.render("home");
     // console.log(`yer request date: ${req.requestTime}`);
 });
-
-
 
 
 
