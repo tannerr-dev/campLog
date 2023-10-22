@@ -94,14 +94,6 @@ app.use("/campgrounds", campgrounds);
 app.use("/campgrounds/:id/reviews", reviews) //EMBEDDING THE :id makes it so we have to merge params on the router page
 
 
-app.get("/fakeUser", async (req, res)=>{
-    const user = new User({
-        email: "colt@gmail.com",
-        username: "colt"
-    })
-    const newUser = await User.register(user, "chicken");
-    res.send(newUser)
-})
 
 // Beginning of all the routing after the middleware
 app.get("/", (req, res) => {
