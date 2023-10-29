@@ -28,9 +28,9 @@ router.get("/login", (req,res)=>{
 
 }) 
 
-router.post("login", passport.authenticate("local", {failureFlash: true, failureRedirect: "/login"}), (req, res)=>{
-    req.flash("success", "Welcome back!")
-    res.redirect("/campgrounds")
+router.post("/login", passport.authenticate("local", {failureFlash: true, failureRedirect: "/login"}), (req, res)=>{
+    req.flash("success", "Welcome back!");
+    res.redirect("/campgrounds");
 })// middle ware passport.authenticate with some options in an object
 
 
