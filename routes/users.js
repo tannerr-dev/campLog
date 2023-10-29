@@ -9,17 +9,16 @@ router.get("/register", (req, res)=>{
 });
 
 router.post("/register", catchAsync( async (req , res) => {
- 
+    try{
         const {email, username, password}= req.body;
         const user = new User({email, username});
-        const registeredUser = User.register(user, password); //User.register is a passport feature i believe
+        const registeredUser = await User.register(user, password); //User.register is a passport feature i believe
         req.flash("success", "Welcome to campLog");
         res.redirect("/campgrounds");
-   
-        // req.flash("error", e.message);
-        // res.redirect("/register");
- 
-
+    } catch(e){
+        req.flash("error", e.message);
+        res.redirect("/register");
+    }
 }));
 
 module.exports = router;
