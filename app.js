@@ -19,8 +19,8 @@ const LocalStrategy = require("passport-local");
 const User = require("./models/user")
 
 // NEW ROUTES
-const campgrounds = require("./routes/campgrounds");
-const reviews = require("./routes/reviews");
+const campgroundRoutes = require("./routes/campgrounds");
+const reviewRoutes = require("./routes/reviews");
 const userRoutes = require("./routes/users");
 
 
@@ -34,7 +34,7 @@ db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", () => {
     console.log("DataBASS connected");
 });
-
+ 
 const app = express();
 
 app.engine("ejs", ejsMate);
@@ -90,9 +90,10 @@ app.use((req,res, next)=>{
 
 
 // ROUTES
-app.use("/campgrounds", campgrounds);
-app.use("/campgrounds/:id/reviews", reviews) //EMBEDDING THE :id makes it so we have to merge params on the router page
-app.use("/", userRoutes)
+app.use("/", userRoutes);
+app.use("/campgrounds", campgroundRoutes);
+app.use("/campgrounds/:id/reviews", reviewRoutes); //EMBEDDING THE :id makes it so we have to merge params on the router page
+
 
 
 // Beginning of all the routing after the middleware
