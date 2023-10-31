@@ -7,8 +7,10 @@ const methodOverride = require("method-override");
 const morgan = require("morgan");
 const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError");
+
 // const Joi = require("joi");
 const {campgroundSchema, reviewSchema} = require("./schemas");//JOI schema
+
 const Review = require("./models/review");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
@@ -59,8 +61,11 @@ const sessionConfig = {
         maxAge:1000 * 60 *60 * 24 *7
     }
 }
+
+
 app.use(session(sessionConfig));
 app.use(flash());
+
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()))//User.authenticate is added by passport 

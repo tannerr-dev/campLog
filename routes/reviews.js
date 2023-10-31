@@ -5,7 +5,7 @@ const ExpressError = require("../utils/ExpressError");
 const Campground = require("../models/campground");
 const {reviewSchema} = require("../schemas"); //JOI schema
 const Review = require("../models/review");
-
+const {isLoggedIn} = require("../middleware");
 
 const validateReview = (req, res, next)=>{
     const { error } = reviewSchema.validate(req.body);
