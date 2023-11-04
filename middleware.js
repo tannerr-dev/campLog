@@ -1,6 +1,7 @@
-const {campgroundSchema} = require("./schemas");//JOI schema
+const {campgroundSchema, reviewSchema} = require("./schemas");//JOI schema
 const ExpressError = require("./utils/ExpressError");
 const Campground = require("./models/campground");
+const Review = require("./models/review");
 
 module.exports.isLoggedIn = (req, res, next) => {
     if (!req.isAuthenticated()) {
@@ -39,4 +40,16 @@ module.exports.isAuthor = async (req, res, next)=>{
         return res.redirect(`/campgrounds/${id}`);
     }
     next();
+}
+
+module.exports.validateReview = (req, res, next)=>{
+    const { error } = reviewSchema.validate(req.body);
+    if (error) {
+        const msg = error.details.map((el) => el.message).join(",");
+        console.log(msg);
+        console.log("hell yea from the server, joi validateReview stopped you")
+        throw new ExpressError(msg, 400);
+    } else {
+        next();
+    }
 }
