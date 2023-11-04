@@ -4,11 +4,7 @@ const catchAsync = require("../utils/catchAsync");
 const ExpressError = require("../utils/ExpressError");
 const Campground = require("../models/campground");
 const Review = require("../models/review");
-const { validateReview} = require("../middleware");
-
-
-
-
+const { validateReview } = require("../middleware");
 
 
 
