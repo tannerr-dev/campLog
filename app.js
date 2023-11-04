@@ -83,8 +83,9 @@ app.use((req, res, next) => {
     next();
 });
 
-// this is FLASH setup
+// this is FLASH setup, and storing local data so all app components can access data
 app.use((req,res, next)=>{
+    res.locals.currentUser = req.user;
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
     next();
