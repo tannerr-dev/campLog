@@ -73,8 +73,6 @@ passport.serializeUser(User.serializeUser());//log/store user into session
 passport.deserializeUser(User.deserializeUser());//log/store user out of session
 
 
-
-
 // MIDDLESWARE SECTION, they require the next function as a parameter
 app.use((req, res, next) => {
     req.requestTime = Date.now();
@@ -90,9 +88,6 @@ app.use((req,res, next)=>{
     res.locals.error = req.flash("error");
     next();
 });
-
-
-
 
 
 // ROUTES
@@ -116,11 +111,13 @@ app.all("*", (req, res, next) => {
     next(new ExpressError("Page NOTTTT found", 404))
 });
 
+
 app.use((err, req, res, next) => {
     const { statusCode = 500, message = "Something fucc'd" } = err;
     res.status(statusCode).render("error", { err });
     // res.send("oh man");
 });
+
 
 app.listen(3000, () => {
     console.log("Listening for data waves on port 3000");
