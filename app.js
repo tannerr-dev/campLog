@@ -12,7 +12,7 @@ const ExpressError = require("./utils/ExpressError");
 const {campgroundSchema, reviewSchema} = require("./schemas");//JOI schema
 
 const Review = require("./models/review");
-const cookieParser = require("cookie-parser");
+const cookieParser = require("cookie-parser"); // am i still using this??
 const session = require("express-session");
 const flash = require("connect-flash");
 
