@@ -8,7 +8,7 @@ const mongoose = require("mongoose");
 const Campground = require("./models/campground");
 
 const methodOverride = require("method-override");
-const morgan = require("morgan");
+// const morgan = require("morgan"); 
 const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError");
 
