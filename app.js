@@ -45,7 +45,7 @@ app.set("views", path.join(__dirname, "views"));
 
 app.use(express.urlencoded({ extended: true })); // parses the req.body from the sent form
 app.use(methodOverride("_method"));
-app.use(morgan("common"));
+// app.use(morgan("common"));
 
 // serve static public dir
 app.use(express.static(path.join(__dirname, "public")));
@@ -74,12 +74,13 @@ passport.deserializeUser(User.deserializeUser());//log/store user out of session
 
 
 // MIDDLESWARE SECTION, they require the next function as a parameter
-app.use((req, res, next) => {
-    req.requestTime = Date.now();
-    // console.log(req.method, req.path);
-    console.log(req.request);
-    next();
-});
+
+// app.use((req, res, next) => {
+//     req.requestTime = Date.now();
+//     // console.log(req.method, req.path);
+//     console.log(req.request);
+//     next();
+// }); // this is just morgan logging
 
 // this is FLASH setup, and storing local data so all app components can access data
 app.use((req,res, next)=>{
