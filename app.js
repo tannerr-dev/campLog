@@ -2,6 +2,9 @@ if (process.env.NODE_ENV !== "production"){
     require("dotenv").config();
 }
 
+
+//what the heck
+
  
 const express = require("express");
 const path = require("path");
