@@ -2,7 +2,6 @@ if (process.env.NODE_ENV !== "production"){
     require("dotenv").config();
 }
 
-//hello from vim hehe
  
 const express = require("express");
 const path = require("path");
