@@ -10,11 +10,13 @@ const upload = multer({storage});
 
 router.route("/")
     .get(catchAsync(campgrounds.index))
-    // .post(isLoggedIn, validateCampground, catchAsync(campgrounds.createCampground));
-    .post(upload.array("image"), (req, res)=>{
-        // console.log(req.body, req.files)
-        res.send("It worked.")
-    })
+    .post(isLoggedIn, upload.array('image'), validateCampground, catchAsync(campgrounds.createCampground));
+    //need to rework this so we don't upload an image before validating the campground first
+
+    // .post(upload.array("image"), (req, res)=>{
+    //     console.log(req.body, req.files)
+    //     res.send("It worked.")
+    // }) make this into middleware
 
 router.get("/new", isLoggedIn, campgrounds.renderNewForm);
 //order matters, this needs to be before the /:id otherwise the 'new' will be handled as an id

@@ -11,8 +11,10 @@ cloudinary.config(
 
 const storage = new CloudinaryStorage({
     cloudinary, 
-    folder: "campLog",
-    allowedFormats: ["jpeg", "png", "jpg"]
+    params: {
+        folder: "campLog",
+        allowedFormats: ["jpeg", "png", "jpg"]
+    }
 });
 
 module.exports = {
