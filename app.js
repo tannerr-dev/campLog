@@ -22,14 +22,17 @@ const flash = require("connect-flash");
 
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
+
 const User = require("./models/user")
 
 // NEW ROUTES
 const campgroundRoutes = require("./routes/campgrounds");
 const reviewRoutes = require("./routes/reviews");
 const userRoutes = require("./routes/users");
+//end of dependencies
 
 
+//mongoose db section
 mongoose.connect("mongodb://127.0.0.1:27017/campLog", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -40,9 +43,12 @@ db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", () => {
     console.log("DataBASS connected");
 });
- 
-const app = express();
+// mongoose section over
 
+
+//instantiate express server
+const app = express();
+//set some config for express template engine
 app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -71,7 +77,6 @@ app.use(session(sessionConfig));
 app.use(flash());
 
 
-
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()))//User.authenticate is added by passport 
@@ -87,6 +92,7 @@ passport.deserializeUser(User.deserializeUser());//log/store user out of session
 //     console.log(req.request);
 //     next();
 // }); // this is just morgan logging
+
 
 // this is FLASH setup, and storing local data so all app components can access data
 app.use((req,res, next)=>{

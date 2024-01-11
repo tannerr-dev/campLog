@@ -10,19 +10,15 @@ module.exports.renderNewForm = (req, res) => {
 };
 
 module.exports.createCampground = async (req, res, next) => {
-    
     // if(!req.body.campground) throw new ExpressError("Invalid data bruh", 400);
     const campground = new Campground(req.body.campground);
     campground.images = req.files.map(f=>({url: f.path, filename: f.filename})); //implicit return arrow function 
-    console.log(campground.images)
+    console.log(campground.images);
     //req.files comes from multer??
-
     campground.author = req.user._id;
     await campground.save();
     req.flash("success", "Created new campground.");
-    
     res.redirect(`/campgrounds/${campground._id}`);
-    
 }
 
 module.exports.showCampground =  async (req, res) => {
@@ -31,7 +27,7 @@ module.exports.showCampground =  async (req, res) => {
         populate:{
             path:'author'
         }
-    }).populate('author');
+    }).populate('author'); //is populate a mongoose thing?
     // console.log(campground.reviews)
     if (!campground){
         req.flash("error", "Cannot find that campground");

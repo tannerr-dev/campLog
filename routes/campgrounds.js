@@ -1,11 +1,14 @@
 const express = require("express");
 const router = express.Router();
+
 const catchAsync = require("../utils/catchAsync");
 const Campground = require("../models/campground");
+const campgrounds = require("../controllers/campgrounds");
+
 const {isLoggedIn, validateCampground, isAuthor} = require("../middleware");
-const campgrounds = require("../controllers/campgrounds")
+
 const multer = require("multer");
-const {storage}=require("../cloudinary"); //node automatically searches for index.js in a folder so there is no need to specify the filename
+const {storage} = require("../cloudinary"); //node automatically searches for index.js in a folder so there is no need to specify the filename
 const upload = multer({storage});
 
 router.route("/")
